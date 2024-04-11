@@ -1,0 +1,42 @@
+main {
+    min-height: 80vh;
+}
+
+.header-icon{
+  font-size: 18px;
+}
+
+.product-card {
+    text-decoration: none;
+}
+
+.zooming-container {
+    overflow: hidden;
+}
+
+.zoomimg {
+    transition: transform 0.2s ease;
+}
+
+.zoomimg:hover {
+    transform: scale(1.1);
+}
+
+.h6-row {
+    display: flex;
+  }
+  
+.h6-left {
+    flex-grow: 1; 
+  }
+  
+.h6-right {
+    text-align: right; 
+  }
+
+
+.product-description {
+    font-size: large;
+    text-align: justify;
+  }
+  
