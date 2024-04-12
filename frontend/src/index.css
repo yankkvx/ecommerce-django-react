@@ -2,8 +2,8 @@ main {
     min-height: 80vh;
 }
 
-.header-icon{
-  font-size: 18px;
+.header-icon {
+    font-size: 18px;
 }
 
 .product-card {
@@ -24,19 +24,22 @@ main {
 
 .h6-row {
     display: flex;
-  }
-  
-.h6-left {
-    flex-grow: 1; 
-  }
-  
-.h6-right {
-    text-align: right; 
-  }
+}
 
+.h6-left {
+    flex-grow: 1;
+}
+
+.h6-right {
+    text-align: right;
+}
 
 .product-description {
     font-size: large;
     text-align: justify;
-  }
-  
+}
+
+.about-us-text {
+  text-align: justify;
+  font-size: 1.3rem
+}
