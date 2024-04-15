@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
@@ -10,18 +10,27 @@ import {
     Button,
     Card,
 } from "react-bootstrap";
-
-import products from "../products";
+import axios from "axios";
 
 function ProductScreen() {
     const { id } = useParams();
-    const product = products.find((p) => p.id == id);
+    
+    const [product, setProduct] = useState([]);
+
+    useEffect(() => {
+        async function fetchProduct() {
+            const { data } = await axios.get(`/api/products/${id}`);
+            setProduct(data);
+        }
+
+        fetchProduct()
+    }, []);
 
     return (
         <Row className="py-3">
             <Col md={5}>
                 <Carousel>
-                    {product.images.map((image, index) => (
+                    {product.images && product.images.map((image, index) => (
                         <Carousel.Item key={index}>
                             <Image src={image} alt={product.name} fluid />
                         </Carousel.Item>
