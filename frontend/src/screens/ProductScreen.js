@@ -71,14 +71,14 @@ function ProductScreen() {
                         <Row>
                             <Col>Status:</Col>
                             <Col>
-                                {product.countInStock > 0
+                                {product.count_in_stock > 0
                                     ? "In Stock"
                                     : "Out of Stock"}
                             </Col>
                         </Row>
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        <Button className="col-12" type="button" disabled={product.countInStock === 0}>
+                        <Button className="col-12" type="button" disabled={product.count_in_stock === 0}>
                             Add to Cart
                         </Button>
                     </ListGroup.Item>
