@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
     Row,
@@ -9,13 +8,15 @@ import {
     Image,
     ListGroup,
     Button,
-    Card,
+    Form,
+    ListGroupItem,
 } from "react-bootstrap";
 import { listSingleProduct } from "../actions/productActions";
+import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
-function ProductScreen() {
+function ProductScreen({ history }) {
     const { id } = useParams();
     const dispatch = useDispatch();
     // Selecting the singleProduct slice of state from Redux store.
@@ -23,9 +24,16 @@ function ProductScreen() {
     // Destructuring singleProduct state into error, loading, and product.
     const { error, loading, product } = singleProduct;
 
+    const [quantity, setQuantity] = useState(1);
+    const navigate = useNavigate();
+
     useEffect(() => {
         dispatch(listSingleProduct(id));
     }, [dispatch]);
+
+    const addToCartHadler = () => {
+        navigate(`/cart/${id}?quantity=${quantity}`);
+    };
 
     return (
         <div>
@@ -65,6 +73,12 @@ function ProductScreen() {
                                 </p>
                             </ListGroup.Item>
                             <ListGroup.Item>
+                                <Rating
+                                    value={product.rating}
+                                    text={`${product.num_reviews} reviews`}
+                                />
+                            </ListGroup.Item>
+                            <ListGroup.Item>
                                 <p className="product-description">
                                     {product.description}
                                 </p>
@@ -89,8 +103,39 @@ function ProductScreen() {
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
+                            {product.count_in_stock > 0 && (
+                                <ListGroupItem>
+                                    <Row>
+                                        <Col>Quantity:</Col>
+                                        <Col xs="auto" className="my-1">
+                                            <Form.Control
+                                                as="select"
+                                                value={quantity}
+                                                onChange={(e) =>
+                                                    setQuantity(e.target.value)
+                                                }
+                                            >
+                                                {[
+                                                    ...Array(
+                                                        product.count_in_stock
+                                                    ).keys(),
+                                                ].map((x) => (
+                                                    <option
+                                                        key={x + 1}
+                                                        value={x + 1}
+                                                    >
+                                                        {/* Array starts with 0, so we need to increment that each time */}
+                                                        {x + 1}
+                                                    </option>
+                                                ))}
+                                            </Form.Control>
+                                        </Col>
+                                    </Row>
+                                </ListGroupItem>
+                            )}
                             <ListGroup.Item>
                                 <Button
+                                    onClick={addToCartHadler}
                                     className="col-12"
                                     type="button"
                                     disabled={product.count_in_stock === 0}
