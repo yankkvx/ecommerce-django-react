@@ -3,16 +3,25 @@ import { configureStore } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import {
-    productListReducers,
-    singleProductReducers,
+    productListReducer,
+    singleProductReducer,
 } from "./reducers/productReducers";
+import { cartReducer } from "./reducers/cartReducers";
 
 const reducer = combineReducers({
-    productList: productListReducers,
-    singleProduct: singleProductReducers,
+    productList: productListReducer,
+    singleProduct: singleProductReducer,
+    cart: cartReducer,
 });
 
-const initialState = {};
+// Load data into state
+const cartItemsLocalStorage = localStorage.getItem("cartItems")
+    ? JSON.parse(localStorage.getItem("cartItems"))
+    : [];
+
+const initialState = {
+    cart: { cartItems: cartItemsLocalStorage },
+};
 
 const middleware = [thunk];
 
