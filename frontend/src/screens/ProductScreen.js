@@ -16,7 +16,7 @@ import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
-function ProductScreen({ history }) {
+function ProductScreen({ match, history }) {
     const { id } = useParams();
     const dispatch = useDispatch();
     // Selecting the singleProduct slice of state from Redux store.
@@ -31,8 +31,8 @@ function ProductScreen({ history }) {
         dispatch(listSingleProduct(id));
     }, [dispatch]);
 
-    const addToCartHadler = () => {
-        navigate(`/cart/${id}?quantity=${quantity}`);
+    const addToCartHandler = () => {
+        navigate(`/cart/${id}?quantity=${quantity}`); // Use 'id' from useParams
     };
 
     return (
@@ -135,7 +135,7 @@ function ProductScreen({ history }) {
                             )}
                             <ListGroup.Item>
                                 <Button
-                                    onClick={addToCartHadler}
+                                    onClick={addToCartHandler}
                                     className="col-12"
                                     type="button"
                                     disabled={product.count_in_stock === 0}
