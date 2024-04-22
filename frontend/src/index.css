@@ -43,3 +43,14 @@ main {
   text-align: justify;
   font-size: 1.3rem
 }
+
+
+.title-h1 {
+    font-size: 2rem;
+    padding: 1rem 0;
+}
+
+.title-h2 {
+    font-size: 1.4rem;
+    padding: 1rem 0;
+}
