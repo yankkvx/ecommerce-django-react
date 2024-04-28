@@ -1,9 +1,8 @@
-from django.shortcuts import render
-from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Product
-from .serializers import ProductSerializer
+from django.contrib.auth.models import User
+from .serializers import ProductSerializer, UserSerializer, UserSerializerRefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -11,15 +10,21 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-
-        data['username'] = self.user.username
-        data['email'] = self.user.email
-
+        serialzier = UserSerializerRefreshToken(self.user).data
+        for key, value in serialzier.items():
+            data[key] = value
         return data
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+@api_view(['GET'])
+def get_user(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
