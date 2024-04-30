@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from .serializers import ProductSerializer, UserSerializer, UserSerializerRefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -27,6 +29,25 @@ def get_user(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def register_user(request):
+    data = request.data
+    try:
+        user = User.objects.create(
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password'])
+        )
+
+        serializer = UserSerializerRefreshToken(user, many=False)
+        return Response(serializer.data)
+    except:
+        content = {'detail': 'This email is already associated with an account.'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
 
 
 @api_view(['GET'])
