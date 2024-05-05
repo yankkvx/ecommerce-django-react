@@ -1,8 +1,18 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { logout } from "../actions/userActions";
 
 function Header() {
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+    const dispatch = useDispatch();
+
+    const logoutHandler = () => {
+        dispatch(logout());
+    };
+
     return (
         <header>
             <Navbar bg="light" variant="light" collapseOnSelect expand="sm">
@@ -16,26 +26,27 @@ function Header() {
                             <LinkContainer to="/about-us">
                                 <Nav.Link>About Us</Nav.Link>
                             </LinkContainer>
-                            <NavDropdown
-                                title="Account"
-                                id="collapsible-nav-dropdown"
-                            >
-                                <LinkContainer to="/my-orders">
-                                    <NavDropdown.Item href="/my-orders">
-                                        My Orders
-                                    </NavDropdown.Item>
+                            {userInfo ? (
+                                <NavDropdown
+                                    title={userInfo.full_name}
+                                    id="username"
+                                >
+                                    <LinkContainer to="/profile">
+                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                                    </LinkContainer>
+                                    <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                                </NavDropdown>
+
+                            ) : (
+                                <LinkContainer to='/login'>
+                                    <Nav.Link>Login</Nav.Link>
                                 </LinkContainer>
-                            </NavDropdown>
+                            )}
                         </Nav>
                         <Nav>
                             <LinkContainer to="/cart">
                                 <Nav.Link>
                                     <i className="fa-solid fa-bag-shopping header-icon" />
-                                </Nav.Link>
-                            </LinkContainer>
-                            <LinkContainer to="/login">
-                                <Nav.Link>
-                                    <i className="fa-regular fa-user header-icon" />
                                 </Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/saved">
