@@ -79,8 +79,8 @@ function LoginScreen() {
                     <Link
                         to={
                             redirect
-                                ? `/register?redirect=${redirect}`
-                                : "/register"
+                                ? `/sign-up?redirect=${redirect}`
+                                : "/sign-up"
                         }
                         className="text-link"
                     >
