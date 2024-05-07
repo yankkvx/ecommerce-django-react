@@ -11,6 +11,7 @@ import {
     userLoginReducer,
     userRegisterReducer,
     userProfileReducer,
+    userUpdateReducer,
 } from "./reducers/userReducers";
 
 const reducer = combineReducers({
@@ -20,6 +21,7 @@ const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
     userProfile: userProfileReducer,
+    userUpdate: userUpdateReducer,
 });
 
 // Load data into state
