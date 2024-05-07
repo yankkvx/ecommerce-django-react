@@ -26,7 +26,7 @@ function Header() {
                             <LinkContainer to="/about-us">
                                 <Nav.Link>About Us</Nav.Link>
                             </LinkContainer>
-                            {userInfo ? (
+                            {userInfo && userInfo.length !==0 ? (
                                 <NavDropdown
                                     title={userInfo.full_name}
                                     id="username"
