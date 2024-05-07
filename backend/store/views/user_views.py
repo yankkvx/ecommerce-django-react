@@ -22,6 +22,23 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user(request):
+    user = request.user
+    serializer = UserSerializerRefreshToken(user, many=False)
+
+    data = request.data
+    user.first_name = data['first_name']
+    user.last_name = data['last_name']
+    user.email = data['email']
+    if data['password'] != '':
+        user.passwrod = make_password(data['password'])
+
+    user.save()
+    return Response(serializer.data)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user(request):
