@@ -10,7 +10,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'full_name', 'is_staff']
+        fields = ['id', 'username', 'email', 'first_name',
+                  'last_name', 'full_name', 'is_staff']
 
     # MEthod to get full name based on first_name and last_name.
     def get_full_name(self, obj):
@@ -32,7 +33,8 @@ class UserSerializerRefreshToken(UserSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'full_name', 'is_staff', 'token']
+        fields = ['id', 'username', 'email', 'first_name',
+                  'last_name', 'full_name', 'is_staff', 'token']
 
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
