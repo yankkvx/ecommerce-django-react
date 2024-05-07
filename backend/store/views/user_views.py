@@ -33,7 +33,7 @@ def update_user(request):
     user.last_name = data['last_name']
     user.email = data['email']
     if data['password'] != '':
-        user.passwrod = make_password(data['password'])
+        user.password = make_password(data['password'])
 
     user.save()
     return Response(serializer.data)
