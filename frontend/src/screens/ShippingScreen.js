@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
 import { SAVE_SHIPPING_ADDRESS } from "../constants/cartConstants";
 import { saveShippingAddress } from "../actions/cartActions";
+import Checkout from "../components/Checkout";
 
 function ShippingScreen() {
     const cart = useSelector((state) => state.cart);
     const { shippingAddress } = cart;
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const [country, setCountry] = useState(shippingAddress.country);
     const [city, setCity] = useState(shippingAddress.city);
@@ -20,11 +21,12 @@ function ShippingScreen() {
     const submitHandler = (e) => {
         e.preventDefault();
         dispatch(saveShippingAddress({ country, city, address, postal_code }));
-        navigate('/payment')
+        navigate("/payment");
     };
 
     return (
-        <FormContainer>
+        <FormContainer >
+            <Checkout step1 step2/>
             <h2>Shipping</h2>
             <Form onSubmit={submitHandler}>
                 <Form.Group className="py-2" controlId="country">
