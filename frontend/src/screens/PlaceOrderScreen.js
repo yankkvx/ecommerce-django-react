@@ -11,20 +11,45 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import FormContainer from "../components/FormContainer";
 import Message from "../components/Message";
 import Checkout from "../components/Checkout";
-import Product from "../components/Product";
+import { addOrder } from "../actions/orderActions";
+import { CREATE_ORDER_RESET } from "../constants/orderConstants";
 
 function PlaceOrderScreen() {
+    const orderCreate = useSelector((state) => state.orderCreate);
+    const { order, error, success } = orderCreate;
+
     const cart = useSelector((state) => state.cart);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     cart.items_price = cart.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
     cart.shipping_price = (cart.items_price > 500 ? 0 : cart.items_price * 0.01).toFixed(2);
     cart.total_price = (Number(cart.items_price) + Number(cart.shipping_price)).toFixed(2);
 
+
+    useEffect(() => {
+        if (!cart.paymentMethod) {
+            navigate('/payment/');
+        }
+        if(success){
+            navigate(`/order/${order.id}`)
+            dispatch({ type: CREATE_ORDER_RESET })
+        }
+    }, [success, navigate])
+
     const placeOrder = () => {
-        console.log("Place order");
+        dispatch(
+            addOrder({
+                orderItems: cart.cartItems,
+                shippingAddress: cart.shippingAddress,
+                paymentMethod: cart.paymentMethod,
+                items_price: cart.items_price,
+                shipping_price: cart.shipping_price,
+                total_price: cart.total_price,
+            })
+        );
     };
     return (
         <div>
@@ -126,6 +151,9 @@ function PlaceOrderScreen() {
                                 >
                                     Place order
                                 </Button>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                {error && <Message variant='danger'>{error}</Message>}
                             </ListGroup.Item>
                         </ListGroup>
                     </Card>
