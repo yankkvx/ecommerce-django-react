@@ -6,6 +6,7 @@ import {
     SAVE_PAYMENT_METHOD,
 } from "../constants/cartConstants";
 
+
 // getState let us get any part of the state
 export const addToCart = (id, quantity) => async (dispatch, getState) => {
     const { data } = await axios.get(`/api/products/${id}`);
