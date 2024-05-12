@@ -44,8 +44,6 @@ class Review(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=200, null=True, blank=True)
-    tax_price = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True)
     shipping_price = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     total_price = models.DecimalField(
@@ -57,7 +55,7 @@ class Order(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user.name} made an order №{self.id} at {self.created_at}'
+        return f'{self.user.first_name + self.user.last_name} made an order №{self.id} at {self.created_at}'
 
 
 class OrderItem(models.Model):
@@ -69,17 +67,6 @@ class OrderItem(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True)
     image = models.ForeignKey(
         ProductImage, on_delete=models.SET_NULL, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        # When we save a new OrderItem, check if it has no image but has a product
-        if not self.image and self.product:
-            # Find the first image associated with this product
-            first_image = self.product.images.first()
-            # If image is found we attach it to to the current OrderItem
-            if first_image:
-                self.image = first_image
-        # Use the save method of a parent class to save the changes
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.name}'
