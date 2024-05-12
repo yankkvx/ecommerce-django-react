@@ -5,7 +5,6 @@ import {
     SAVE_SHIPPING_ADDRESS,
     SAVE_PAYMENT_METHOD,
 } from "../constants/cartConstants";
-import ShippingScreen from "../screens/ShippingScreen";
 
 // getState let us get any part of the state
 export const addToCart = (id, quantity) => async (dispatch, getState) => {
