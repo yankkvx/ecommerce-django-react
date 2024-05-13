@@ -13,7 +13,10 @@ import {
     userProfileReducer,
     userUpdateReducer,
 } from "./reducers/userReducers";
-import { createOrderReducer } from "./reducers/orderReducers";
+import {
+    createOrderReducer,
+    orderDetailsReducer,
+} from "./reducers/orderReducers";
 
 const reducer = combineReducers({
     productList: productListReducer,
@@ -24,6 +27,7 @@ const reducer = combineReducers({
     userProfile: userProfileReducer,
     userUpdate: userUpdateReducer,
     orderCreate: createOrderReducer,
+    orderDetails: orderDetailsReducer,
 });
 
 // Load data into state
