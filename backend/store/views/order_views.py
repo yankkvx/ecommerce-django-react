@@ -56,3 +56,21 @@ def add_order_items(request):
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_order(request, pk):
+    user = request.user
+    order = Order.objects.get(id=pk)
+    try:
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            content = {
+                'detail': 'Access denied. This order does not belong to you'}
+            return Response(content, status=status.HTTP_403_FORBIDDEN)
+    except:
+        content = {'detail': 'Order not found.'}
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
