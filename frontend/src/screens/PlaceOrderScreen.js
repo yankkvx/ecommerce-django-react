@@ -34,7 +34,7 @@ function PlaceOrderScreen() {
             navigate('/payment/');
         }
         if(success){
-            navigate(`/order/${order.id}`)
+            navigate(`/orders/${order.id}`)
             dispatch({ type: CREATE_ORDER_RESET })
         }
     }, [success, navigate])

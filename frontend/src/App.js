@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -13,6 +13,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import ShippingScreen from "./screens/ShippingScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
 
 function App() {
     return (
@@ -50,8 +51,12 @@ function App() {
                                 element={<PaymentScreen />}
                             />
                             <Route
-                                path="place-order/"
+                                path="/place-order/"
                                 element={<PlaceOrderScreen />}
+                            />
+                            <Route
+                                path="/orders/:id?"
+                                element={<OrderScreen />}
                             />
                         </Routes>
                     </Container>
