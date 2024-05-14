@@ -98,6 +98,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    image = ProductImageSerializer()
     class Meta:
         model = OrderItem
         fields = '__all__'
