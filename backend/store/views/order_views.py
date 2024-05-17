@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..models import Product, Order, OrderItem, ShippingAddress
 from ..serializers import OrderSerializer
 from rest_framework import status
+from datetime import datetime
 
 
 @api_view(['POST'])
@@ -74,3 +75,14 @@ def get_order(request, pk):
     except:
         content = {'detail': 'Order not found.'}
         return Response(content, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def paid_order_update(request, pk):
+    order = Order.objects.get(id=pk)
+    order.is_paid = True
+    order.paid_at = datetime.now()
+    order.save()
+
+    return Response('Order was paid')
