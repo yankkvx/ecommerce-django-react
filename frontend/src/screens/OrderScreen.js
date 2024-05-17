@@ -13,7 +13,9 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { getOrderDetails } from "../actions/orderActions";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { getOrderDetails, payOrder } from "../actions/orderActions";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 function OrderScreen() {
     const params = useParams();
@@ -21,8 +23,13 @@ function OrderScreen() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [sdkReady, setSdkReady] = useState();
+
     const orderDetails = useSelector((state) => state.orderDetails);
     const { order, error, loading } = orderDetails;
+
+    const orderPay = useSelector((state) => state.orderPay);
+    const { loading: loadingPay, success: successPay } = orderPay;
 
     if (!loading && !error) {
         order.items_price = order.orders
@@ -30,11 +37,33 @@ function OrderScreen() {
             .toFixed(2);
     }
 
+    const addPaypalScript = () => {
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}&currency=USD`;
+        script.async = true;
+        script.onload = () => {
+            setSdkReady(true);
+        };
+        document.body.appendChild(script);
+    };
+
     useEffect(() => {
-        if (!order || order.id !== Number(orderId)) {
+        if (!order || successPay || order.id !== Number(orderId)) {
+            dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
+        } else if (!order.is_paid) {
+            if (!window.paypal) {
+                addPaypalScript();
+            } else {
+                setSdkReady(true);
+            }
         }
-    }, [order, orderId]);
+    }, [dispatch, order, orderId, successPay]);
+
+    const successPaymentHandler = (paymentResult) => {
+        dispatch(payOrder(orderId, paymentResult));
+    };
 
     return (
         <div>
@@ -66,9 +95,16 @@ function OrderScreen() {
                                     {order.shipping_address.country}
                                 </p>
                                 {order.is_delivered ? (
-                                    <Message variant='success'>Delivered at {new Date(order.delivered_at).toLocaleString()}</Message>
+                                    <Message variant="success">
+                                        Delivered at{" "}
+                                        {new Date(
+                                            order.delivered_at
+                                        ).toLocaleString()}
+                                    </Message>
                                 ) : (
-                                    <Message variant='info'>Not delivered</Message>
+                                    <Message variant="info">
+                                        Not delivered
+                                    </Message>
                                 )}
                             </ListGroup.Item>
                             <ListGroup.Item>
@@ -78,9 +114,14 @@ function OrderScreen() {
                                     {order.payment_method}
                                 </p>
                                 {order.is_paid ? (
-                                    <Message variant='success'>Paid at {new Date(order.paid_at).toLocaleString()}</Message>
+                                    <Message variant="success">
+                                        Paid at{" "}
+                                        {new Date(
+                                            order.paid_at
+                                        ).toLocaleString()}
+                                    </Message>
                                 ) : (
-                                    <Message variant='info'>Not paid</Message>
+                                    <Message variant="info">Not paid</Message>
                                 )}
                             </ListGroup.Item>
                             <ListGroup.Item>
@@ -163,6 +204,55 @@ function OrderScreen() {
                                         </Message>
                                     )}
                                 </ListGroup.Item>
+                                {!order.is_paid && (
+                                    <ListGroup.Item>
+                                        {loadingPay && <Loader />}
+                                        {!sdkReady ? (
+                                            <Loader />
+                                        ) : (
+                                            <PayPalScriptProvider
+                                                options={{
+                                                    "client-id":
+                                                        process.env
+                                                            .REACT_APP_PAYPAL_CLIENT_ID,
+                                                    currency: "USD",
+                                                }}
+                                            >
+                                                <PayPalButtons
+                                                    createOrder={(
+                                                        data,
+                                                        actions
+                                                    ) => {
+                                                        return actions.order.create(
+                                                            {
+                                                                purchase_units:
+                                                                    [
+                                                                        {
+                                                                            amount: {
+                                                                                value: order.total_price,
+                                                                            },
+                                                                        },
+                                                                    ],
+                                                            }
+                                                        );
+                                                    }}
+                                                    onApprove={(
+                                                        data,
+                                                        actions
+                                                    ) => {
+                                                        return actions.order
+                                                            .capture()
+                                                            .then((details) => {
+                                                                successPaymentHandler(
+                                                                    details
+                                                                );
+                                                            });
+                                                    }}
+                                                />
+                                            </PayPalScriptProvider>
+                                        )}
+                                    </ListGroup.Item>
+                                )}
                             </ListGroup>
                         </Card>
                     </Col>
