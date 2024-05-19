@@ -40,10 +40,9 @@ main {
 }
 
 .about-us-text {
-  text-align: justify;
-  font-size: 1.3rem
+    text-align: justify;
+    font-size: 1.3rem;
 }
-
 
 .title-h1 {
     font-size: 2rem;
@@ -53,4 +52,8 @@ main {
 .title-h2 {
     font-size: 1.4rem;
     padding: 1rem 0;
+}
+
+tr td {
+    vertical-align: middle;
 }
