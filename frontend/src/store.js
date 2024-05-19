@@ -17,6 +17,7 @@ import {
     createOrderReducer,
     orderDetailsReducer,
     orderPayReducer,
+    userOrdersReducer,
 } from "./reducers/orderReducers";
 
 const reducer = combineReducers({
@@ -30,6 +31,7 @@ const reducer = combineReducers({
     orderCreate: createOrderReducer,
     orderDetails: orderDetailsReducer,
     orderPay: orderPayReducer,
+    userOrders: userOrdersReducer,
 });
 
 // Load data into state
