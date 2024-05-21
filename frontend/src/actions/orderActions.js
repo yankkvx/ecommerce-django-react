@@ -50,8 +50,8 @@ export const addOrder = (order) => async (dispatch, getState) => {
         dispatch({
             type: CREATE_ORDER_FAIL,
             payload:
-                error.response && error.response.data.content
-                    ? error.response.data.content
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
                     : error.message,
         });
     }
@@ -84,8 +84,8 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
         dispatch({
             type: ORDER_DETAILS_FAIL,
             payload:
-                error.response && error.response.data.content
-                    ? error.response.data.content
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
                     : error.message,
         });
     }
@@ -122,13 +122,12 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
         dispatch({
             type: ORDER_PAY_FAIL,
             payload:
-                error.response && error.response.data.content
-                    ? error.response.data.content
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
                     : error.message,
         });
     }
 };
-
 
 export const getUserOrders = () => async (dispatch, getState) => {
     try {
@@ -157,8 +156,8 @@ export const getUserOrders = () => async (dispatch, getState) => {
         dispatch({
             type: USER_ORDERS_FAIL,
             payload:
-                error.response && error.response.data.content
-                    ? error.response.data.content
+                error.response && error.response.data.detal
+                    ? error.response.data.detal
                     : error.message,
         });
     }
