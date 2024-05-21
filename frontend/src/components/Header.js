@@ -26,21 +26,44 @@ function Header() {
                             <LinkContainer to="/about-us">
                                 <Nav.Link>About Us</Nav.Link>
                             </LinkContainer>
-                            {userInfo && userInfo.length !==0 ? (
+
+                            {userInfo && userInfo.length !== 0 ? (
                                 <NavDropdown
                                     title={userInfo.full_name}
                                     id="username"
+                                    className="custom-dropdown"
                                 >
                                     <LinkContainer to="/profile">
-                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                                        <NavDropdown.Item>
+                                            Profile
+                                        </NavDropdown.Item>
                                     </LinkContainer>
-                                    <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={logoutHandler}>
+                                        Logout
+                                    </NavDropdown.Item>
                                 </NavDropdown>
-
                             ) : (
-                                <LinkContainer to='/login'>
+                                <LinkContainer to="/login">
                                     <Nav.Link>Login</Nav.Link>
                                 </LinkContainer>
+                            )}
+                            {userInfo && userInfo.is_staff && (
+                                <NavDropdown
+                                    title="Admin"
+                                    id="admin"
+                                    className="custom-dropdown"
+                                >
+                                    <LinkContainer to="/admin/users/">
+                                        <NavDropdown.Item>
+                                            Users
+                                        </NavDropdown.Item>
+                                    </LinkContainer>
+                                    <LinkContainer to="/admin/products/">
+                                        <NavDropdown.Item>
+                                            Products
+                                        </NavDropdown.Item>
+                                    </LinkContainer>
+                                </NavDropdown>
                             )}
                         </Nav>
                         <Nav>
