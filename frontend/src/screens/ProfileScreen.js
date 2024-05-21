@@ -36,7 +36,7 @@ function ProfileScreen() {
         if (!userInfo || userInfo.length === 0) {
             navigate("/login");
         } else {
-            if (!user || !user.email || success) {
+            if (!user || !user.email || success || userInfo.id !== user.id) {
                 dispatch({ type: USER_UPDATE_RESET });
                 dispatch(getUserProfile("profile"));
                 dispatch(getUserOrders());
