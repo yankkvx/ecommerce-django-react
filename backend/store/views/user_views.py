@@ -90,3 +90,35 @@ def delete_user(request, pk):
         return Response('User not found', status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def get_user_by_id(request, pk):
+    try:
+        user = User.objects.get(id=pk)
+        serializer = UserSerializer(user, many=False)
+        return Response(serializer.data)
+    except:
+        content = {
+            'detail': 'Access Denied: This page is restricted to admin users only.'}
+        return Response(content, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def update_user_by_admin(request, pk):
+    user = User.objects.get(id=pk)
+    
+
+    data = request.data
+    user.first_name = data['first_name']
+    user.last_name = data['last_name']
+    user.email = data['email']
+    user.is_staff = data['is_staff']
+    if data['password'] != '':
+        user.password = make_password(data['password'])
+
+    user.save()
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
