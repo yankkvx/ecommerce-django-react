@@ -69,6 +69,24 @@ def register_user(request):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def get_users(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    try:
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+    except:
+        content = {
+            'detail': 'Access Denied: This page is restricted to admin users only.'}
+        return Response(content, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def delete_user(request, pk):
+    try:
+        user = User.objects.get(id=pk)
+        user.delete()
+        return Response('User was deleted', status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response('User not found', status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
