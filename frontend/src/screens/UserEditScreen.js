@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
-import { getUserProfile, updateUserProfile } from "../actions/userActions";
+import { getUserProfile, updateAdminUser } from "../actions/userActions";
+import { ADMIN_USER_UPDATE_RESET } from "../constants/userConstants";
 
 function UserEditScreen() {
     const params = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -21,20 +23,42 @@ function UserEditScreen() {
     const userProfile = useSelector((state) => state.userProfile);
     const { error, loading, user } = userProfile;
 
+    const adminUserUpdate = useSelector((state) => state.adminUserUpdate);
+    const {
+        error: errorUpdate,
+        loading: loadingUpdate,
+        success: successUpdate,
+    } = adminUserUpdate;
+
     useEffect(() => {
-        if (!user || user.id !== Number(userId)) {
-            dispatch(getUserProfile(userId));
+        if (successUpdate) {
+            dispatch({ type: ADMIN_USER_UPDATE_RESET });
+            navigate("/admin/users/");
         } else {
-            setFirstName(user.first_name);
-            setLastName(user.last_name);
-            setEmail(user.email);
-            setPassword(user.password);
-            setIsStaff(user.is_staff);
+            if (!user || user.id !== Number(userId)) {
+                dispatch(getUserProfile(userId));
+            } else {
+                setFirstName(user.first_name);
+                setLastName(user.last_name);
+                setEmail(user.email);
+                setPassword(user.password || '');
+                setIsStaff(user.is_staff);
+            }
         }
-    }, [dispatch, user, userId]);
+    }, [dispatch, user, userId, successUpdate]);
 
     const submitHandler = (e) => {
         e.preventDefault();
+        dispatch(
+            updateAdminUser({
+                id: user.id,
+                first_name,
+                last_name,
+                email,
+                password: password || '',
+                is_staff,
+            })
+        );
     };
 
     return (
@@ -42,6 +66,8 @@ function UserEditScreen() {
             <Link to="/admin/users/">Go back</Link>
             <FormContainer>
                 <h2>Edit User</h2>
+                {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
                 {loading ? (
                     <Loader />
                 ) : error ? (
