@@ -4,7 +4,7 @@ import { Row, Col, Image, Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { listProducts } from "../actions/productActions";
+import { listProducts, deleteProduct } from "../actions/productActions";
 
 function ProductsScreen() {
     const dispatch = useDispatch();
@@ -15,18 +15,28 @@ function ProductsScreen() {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
+    const productDelete = useSelector((state) => state.productDelete);
+    const {
+        loading: loadingDelete,
+        error: errorDelete,
+        success: successDelete,
+    } = productDelete;
+
     useEffect(() => {
         if (userInfo && userInfo.is_staff) {
             dispatch(listProducts());
         } else {
             navigate("/login");
         }
-    }, [navigate, dispatch]);
+    }, [navigate, successDelete, dispatch]);
 
     const deleteProductHandler = (id) => {
-        window.confirm(
-            `Are you sure, that you want to delete product with ${id} ID?`
-        );
+        if (
+            window.confirm(
+                `Are you sure, that you want to delete product with ${id} ID?`
+            )
+        )
+            dispatch(deleteProduct(id));
     };
 
     const addProductHandler = (product) => {
@@ -45,6 +55,8 @@ function ProductsScreen() {
                     </Button>
                 </Col>
             </Row>
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant="danger">{errorDelete}</Message>}
             {loading ? (
                 <Loader />
             ) : error ? (
@@ -69,7 +81,7 @@ function ProductsScreen() {
                                     <td>{product.id}</td>
                                     <td>
                                         <Image
-                                            className="img-fluid" 
+                                            className="img-fluid"
                                             src={product.images[0]}
                                         />
                                     </td>
