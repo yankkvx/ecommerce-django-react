@@ -4,7 +4,12 @@ import { Row, Col, Image, Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { listProducts, deleteProduct } from "../actions/productActions";
+import {
+    listProducts,
+    deleteProduct,
+    createProduct,
+} from "../actions/productActions";
+import { CREATE_PRODUCT_RESET } from "../constants/productConstants";
 
 function ProductsScreen() {
     const dispatch = useDispatch();
@@ -22,13 +27,25 @@ function ProductsScreen() {
         success: successDelete,
     } = productDelete;
 
+    const productCreate = useSelector((state) => state.productCreate);
+    const {
+        loading: loadingCreate,
+        error: errorCreate,
+        success: successCreate,
+        product: createdProduct,
+    } = productCreate;
+
     useEffect(() => {
-        if (userInfo && userInfo.is_staff) {
-            dispatch(listProducts());
-        } else {
+        dispatch({ type: CREATE_PRODUCT_RESET });
+        if (!userInfo.is_staff) {
             navigate("/login");
         }
-    }, [navigate, successDelete, dispatch]);
+        if (successCreate) {
+            navigate(`/admin/product/${createdProduct.id}/edit/`);
+        } else {
+            dispatch(listProducts());
+        }
+    }, [navigate, successDelete, dispatch, successCreate, createdProduct, userInfo]);
 
     const deleteProductHandler = (id) => {
         if (
@@ -39,8 +56,8 @@ function ProductsScreen() {
             dispatch(deleteProduct(id));
     };
 
-    const addProductHandler = (product) => {
-        console.log("add new product");
+    const addProductHandler = () => {
+        dispatch(createProduct())
     };
 
     return (
@@ -57,6 +74,8 @@ function ProductsScreen() {
             </Row>
             {loadingDelete && <Loader />}
             {errorDelete && <Message variant="danger">{errorDelete}</Message>}
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant="danger">{errorCreate}</Message>}
             {loading ? (
                 <Loader />
             ) : error ? (
