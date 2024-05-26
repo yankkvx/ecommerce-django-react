@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from ..serializers import ProductSerializer
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from PIL import Image
 
 
 @api_view(['GET'])
@@ -72,11 +73,35 @@ def edit_product(request, pk):
         product.price = data['price']
         product.count_in_stock = data['count_in_stock']
         product.save()
-        
+
         serializer = ProductSerializer(product, many=False)
         return Response(serializer.data)
     except Product.DoesNotExist:
         content = {'detail': 'Product not found.'}
         return Response(content, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def upload_image(request):
+    try:
+        data = request.data
+        product_id = data['product_id']
+        product = Product.objects.get(id=product_id)
+        images = request.FILES.getlist('images')  # Retrieve multiple images
+        allowed_formats = ['JPEG', 'PNG']
+        for img in images:
+            # Check image format.
+            try:
+                image = Image.open(img)
+                if image.format not in allowed_formats:
+                    content = {
+                        'detail': 'Unsupported image format. Try to upload JPEG or PNG images.'}
+                    return Response(content, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            ProductImage.objects.create(product=product, image=img)
+        return Response('Images were uploaded.')
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
