@@ -44,7 +44,7 @@ class UserSerializerRefreshToken(UserSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ('image',)
+        fields = ('id', 'image',)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -84,7 +84,8 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_shipping_address(self, obj):
         try:
             # Retrieves the shipping address associated with the order.
-            address = ShippingAddressSerializer(obj.shippingaddress, many=False).data
+            address = ShippingAddressSerializer(
+                obj.shippingaddress, many=False).data
         except:
             # If there's no shipping address, returns False.
             address = False
@@ -99,6 +100,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     image = ProductImageSerializer()
+
     class Meta:
         model = OrderItem
         fields = '__all__'
