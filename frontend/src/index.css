@@ -63,7 +63,7 @@ tr td {
     margin: 0;
 }
 
-.img-fluid {
+.products-img {
     max-width: 100px;
     max-height: 100px;
     object-fit: contain;

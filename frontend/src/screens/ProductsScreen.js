@@ -41,7 +41,7 @@ function ProductsScreen() {
             navigate("/login");
         }
         if (successCreate) {
-            navigate(`/admin/product/${createdProduct.id}/edit/`);
+            navigate(`/admin/product/${createdProduct.id}/edit`);
         } else {
             dispatch(listProducts());
         }
@@ -100,7 +100,7 @@ function ProductsScreen() {
                                     <td>{product.id}</td>
                                     <td>
                                         <Image
-                                            className="img-fluid"
+                                            className="products-img"
                                             src={product.images[0]}
                                         />
                                     </td>
@@ -110,7 +110,7 @@ function ProductsScreen() {
                                     <td>${product.price}</td>
                                     <td>
                                         <Link
-                                            to={`/admin/product/${product.id}`}
+                                            to={`/admin/product/${product.id}/edit`}
                                         >
                                             <Button
                                                 variant="info"
