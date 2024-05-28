@@ -106,3 +106,14 @@ def get_orders(request):
         return Response(serializer.data)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def deliver_order_update(request, pk):
+    order = Order.objects.get(id=pk)
+    order.is_delivered = True
+    order.delivered_at = datetime.now()
+    order.save()
+
+    return Response('Order was delivered.', status=status.HTTP_200_OK)
