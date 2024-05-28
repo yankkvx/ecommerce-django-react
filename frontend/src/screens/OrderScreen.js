@@ -14,8 +14,15 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { getOrderDetails, payOrder } from "../actions/orderActions";
-import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import {
+    getOrderDetails,
+    payOrder,
+    deliverOrder,
+} from "../actions/orderActions";
+import {
+    ORDER_PAY_RESET,
+    ORDER_DELIVER_RESET,
+} from "../constants/orderConstants";
 
 function OrderScreen() {
     const params = useParams();
@@ -30,6 +37,12 @@ function OrderScreen() {
 
     const orderPay = useSelector((state) => state.orderPay);
     const { loading: loadingPay, success: successPay } = orderPay;
+
+    const orderDeliver = useSelector((state) => state.orderDeliver);
+    const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
 
     if (!loading && !error) {
         order.items_price = order.orders
@@ -49,8 +62,19 @@ function OrderScreen() {
     };
 
     useEffect(() => {
-        if (!order || successPay || order.id !== Number(orderId)) {
+
+        if(!userInfo) {
+            navigate('/login')
+        }
+
+        if (
+            !order ||
+            successPay ||
+            order.id !== Number(orderId) ||
+            successDeliver
+        ) {
             dispatch({ type: ORDER_PAY_RESET });
+            dispatch({ type: ORDER_DELIVER_RESET });
             dispatch(getOrderDetails(orderId));
         } else if (!order.is_paid) {
             if (!window.paypal) {
@@ -59,10 +83,14 @@ function OrderScreen() {
                 setSdkReady(true);
             }
         }
-    }, [dispatch, order, orderId, successPay]);
+    }, [dispatch, order, orderId, successPay, successDeliver]);
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
+    };
+
+    const deliverHandler = () => {
+        dispatch(deliverOrder(order));
     };
 
     return (
@@ -254,6 +282,21 @@ function OrderScreen() {
                                     </ListGroup.Item>
                                 )}
                             </ListGroup>
+                            {loadingDeliver && <Loader />}
+                            {userInfo &&
+                                userInfo.is_staff &&
+                                order.is_paid &&
+                                !order.is_delivered && (
+                                    <ListGroup.Item>
+                                        <Button
+                                            type="button"
+                                            className="w-100"
+                                            onClick={deliverHandler}
+                                        >
+                                            Mark as delivered
+                                        </Button>
+                                    </ListGroup.Item>
+                                )}
                         </Card>
                     </Col>
                 </Row>
