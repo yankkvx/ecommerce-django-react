@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Product, ProductImage, Order, OrderItem, ShippingAddress
+from .models import Product, ProductImage, Order, OrderItem, ShippingAddress, Review
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -41,6 +41,12 @@ class UserSerializerRefreshToken(UserSerializer):
         return str(token.access_token)
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
@@ -48,6 +54,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField(read_only=True)
     # Define a SerializerMethodField with 'images' name to handle cutstom serialization for images. This field is not a simple Product model field.
     images = serializers.SerializerMethodField()
 
@@ -61,6 +68,11 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+    def get_reviews(self, obj):
+        reviews = obj.review_set.all()
+        serializer = ReviewSerializer(reviews, many=True)
+        return serializer.data
 
 
 class OrderSerializer(serializers.ModelSerializer):
