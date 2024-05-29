@@ -1,12 +1,13 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from ..models import Product, ProductImage
+from ..models import Product, ProductImage, Review
 from django.contrib.auth.models import User
 from ..serializers import ProductSerializer
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from PIL import Image
+from django.db.models import Avg
 
 
 @api_view(['GET'])
@@ -105,3 +106,44 @@ def upload_image(request):
         return Response('Images were uploaded.')
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_review(request, pk):
+    user = request.user
+    product = Product.objects.get(id=pk)
+    data = request.data
+
+    # Check if the user has already posted a review.
+    exist = product.review_set.filter(user=user).exists()
+    if exist:
+        content = {
+            'detail': 'You have already submitted a review for this product.'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
+
+    # Check if the user wanna post a review without rating.
+    elif data['rating'] == 0:
+        content = {'detail': 'Please provide a rating'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create review
+    else:
+        review = Review.objects.create(
+            user=user,
+            product=product,
+            name=user.first_name,
+            rating=data['rating'],
+            comment=data['comment']
+        )
+
+        # Update the product model.
+        product.num_reviews = product.review_set.count()
+        avg_rating = product.review_set.aggregate(Avg('rating'))['rating__avg']
+        product.rating = avg_rating if avg_rating is not None else 0
+
+        product.save()
+
+        content = {
+            'detail': 'Thank you for your review! Your feedback has been submitted successfully.'}
+        return Response(content, status=status.HTTP_201_CREATED)
