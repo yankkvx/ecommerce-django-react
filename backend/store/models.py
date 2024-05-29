@@ -15,7 +15,7 @@ class Product(models.Model):
     rating = models.DecimalField(
         max_digits=5, decimal_places=2, null=True, blank=True)
     num_reviews = models.IntegerField(null=True, blank=True, default=0)
-    count_in_stock = models.IntegerField(null=True, blank=True, default=True)
+    count_in_stock = models.IntegerField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -24,7 +24,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='product_images/')
+    image = models.ImageField(null=True, blank=True, upload_to='product_images/')
 
     def __str__(self):
         return f'{self.product.name}'
@@ -36,9 +36,10 @@ class Review(models.Model):
     name = models.CharField(max_length=250, null=True, blank=True)
     rating = models.IntegerField(null=True, blank=True, default=0)
     comment = models.TextField(max_length=1000, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user.name} left a comment with a {self.rating} rating'
+        return f'{self.user.first_name} {self.user.last_name} left a comment with a {self.rating} rating'
 
 
 class Order(models.Model):
@@ -51,7 +52,8 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False)
     paid_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     is_delivered = models.BooleanField(default=False)
-    delivered_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+    delivered_at = models.DateTimeField(
+        auto_now_add=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
