@@ -68,3 +68,7 @@ tr td {
     max-height: 100px;
     object-fit: contain;
 }
+
+.review-comment {
+    text-align: justify;
+}
