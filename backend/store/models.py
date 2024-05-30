@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -21,10 +22,17 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+    def save(self, *args, **kwargs):
+        # Normalize the category by converting it to lowercase and replacing spaces with dashes.
+        self.category = slugify(self.category.lower())
+        # Save the obj to the database.
+        super(Product, self).save(*args, **kwargs)
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True, upload_to='product_images/')
+    image = models.ImageField(null=True, blank=True,
+                              upload_to='product_images/')
 
     def __str__(self):
         return f'{self.product.name}'
