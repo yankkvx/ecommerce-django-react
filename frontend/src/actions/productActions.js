@@ -3,6 +3,9 @@ import {
     PRODUCT_LIST_REQUEST,
     PRODUCT_LIST_SUCCESS,
     PRODUCT_LIST_FAIL,
+    PRODUCT_LIST_BY_CATEGORY_REQUEST,
+    PRODUCT_LIST_BY_CATEGORY_SUCCESS,
+    PRODUCT_LIST_BY_CATEGORY_FAIL,
     SINGLE_PRODUCT_REQUEST,
     SINGLE_PRODUCT_SUCCESS,
     SINGLE_PRODUCT_FAIL,
@@ -33,6 +36,27 @@ export const listProducts = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: PRODUCT_LIST_FAIL,
+            payload:
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        });
+    }
+};
+
+export const listProductsByCategory = (category) => async (dispatch) => {
+    try {
+        dispatch({ type: PRODUCT_LIST_BY_CATEGORY_REQUEST });
+
+        const { data } = await axios.get(`/api/products/category/${category}`);
+
+        dispatch({
+            type: PRODUCT_LIST_BY_CATEGORY_SUCCESS,
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_LIST_BY_CATEGORY_FAIL,
             payload:
                 error.response && error.response.data.detail
                     ? error.response.data.detail
