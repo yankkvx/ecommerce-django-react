@@ -4,6 +4,7 @@ import { thunk } from "redux-thunk";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import {
     createProductReducer,
+    reviewCreateReducer,
     editProductReducer,
     productDeleteReducer,
     productListReducer,
@@ -48,6 +49,7 @@ const reducer = combineReducers({
     orderDetails: orderDetailsReducer,
     orderPay: orderPayReducer,
     userOrders: userOrdersReducer,
+    reviewCreate: reviewCreateReducer,
 });
 
 // Load data into state

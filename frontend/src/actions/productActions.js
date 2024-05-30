@@ -15,6 +15,9 @@ import {
     EDIT_PRODUCT_REQUEST,
     EDIT_PRODUCT_SUCCESS,
     EDIT_PRODUCT_FAIL,
+    CREATE_REVIEW_REQUEST,
+    CREATE_REVIEW_SUCCESS,
+    CREATE_REVIEW_FAIL,
 } from "../constants/productConstants";
 
 export const listProducts = () => async (dispatch) => {
@@ -166,3 +169,40 @@ export const editProduct = (product) => async (dispatch, getState) => {
         });
     }
 };
+
+export const createReview =
+    (productId, review) => async (dispatch, getState) => {
+        try {
+            dispatch({ type: CREATE_REVIEW_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            const { data } = await axios.post(
+                `/api/products/${productId}/reviews/`,
+                review,
+                config
+            );
+
+            dispatch({
+                type: CREATE_REVIEW_SUCCESS,
+                payload: data,
+            });
+        } catch (error) {
+            dispatch({
+                type: CREATE_REVIEW_FAIL,
+                payload:
+                    error.response && error.response.data.detail
+                        ? error.response.data.detail
+                        : error.message,
+            });
+        }
+    };
