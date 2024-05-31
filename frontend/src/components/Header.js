@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { logout } from "../actions/userActions";
+import { listCategory } from "../actions/productActions";
+import Loader from "./Loader";
 
 function Header() {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
     const dispatch = useDispatch();
+
+    const categoryList = useSelector((state) => state.categoryList);
+    const { categories } = categoryList;
+
+    useEffect(() => {
+        dispatch(listCategory());
+    }, [dispatch]);
 
     const logoutHandler = () => {
         dispatch(logout());
@@ -26,6 +35,21 @@ function Header() {
                             <LinkContainer to="/about-us">
                                 <Nav.Link>About Us</Nav.Link>
                             </LinkContainer>
+
+                            <NavDropdown
+                                title="Category"
+                                id="category"
+                                className="custom-dropdown"
+                            >
+                                {categories.map((category) => (
+                                    <LinkContainer key={category} to={`category/${category}`}>
+                                        <NavDropdown.Item>
+                                            {category.charAt(0).toUpperCase() +
+                                                category.slice(1)}
+                                        </NavDropdown.Item>
+                                    </LinkContainer>
+                                ))}
+                            </NavDropdown>
 
                             {userInfo && userInfo.length !== 0 ? (
                                 <NavDropdown
