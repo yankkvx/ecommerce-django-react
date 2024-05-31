@@ -30,6 +30,13 @@ def products_by_category(request, category):
         content = {'detail': 'Category not found'}
         return Response(content, status=status.HTTP_404_NOT_FOUND)
 
+
+@api_view(['GET'])
+def get_categories(request):
+    categories = Product.objects.values_list('category', flat=True).distinct()
+    return Response(categories)
+
+
 @api_view(['GET'])
 def get_product(request, pk):
     product = Product.objects.get(id=pk)
