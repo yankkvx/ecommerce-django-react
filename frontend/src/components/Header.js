@@ -4,7 +4,7 @@ import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { logout } from "../actions/userActions";
 import { listCategory } from "../actions/productActions";
-import Loader from "./Loader";
+import SearchBar from "./SearchBar";
 
 function Header() {
     const userLogin = useSelector((state) => state.userLogin);
@@ -106,6 +106,7 @@ function Header() {
                                     <i className="fa-regular fa-heart header-icon" />
                                 </Nav.Link>
                             </LinkContainer>
+                            <SearchBar />
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
