@@ -26,11 +26,11 @@ import {
     CREATE_REVIEW_FAIL,
 } from "../constants/productConstants";
 
-export const listProducts = () => async (dispatch) => {
+export const listProducts = (query = '') => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_REQUEST });
 
-        const { data } = await axios.get("/api/products/");
+        const { data } = await axios.get(`/api/products/${query}`);
 
         dispatch({
             type: PRODUCT_LIST_SUCCESS,

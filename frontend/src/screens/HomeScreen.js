@@ -5,15 +5,17 @@ import { listProducts } from "../actions/productActions";
 import Product from "../components/Product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { useNavigate } from "react-router-dom";
 
 function HomeScreen() {
     const dispatch = useDispatch();
     const productList = useSelector((state) => state.productList);
     const { error, loading, products } = productList;
-
+    const navigate = useNavigate();
+    const query = window.location.search;
     useEffect(() => {
-        dispatch(listProducts());
-    }, [dispatch]);
+        dispatch(listProducts(query));
+    }, [dispatch, query]);
 
     return (
         <div>

@@ -12,9 +12,13 @@ from django.db.models import Avg
 
 @api_view(['GET'])
 def get_products(request):
-    products = Product.objects.all().prefetch_related('productimage_set')
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    try:
+        query = request.query_params.get('query', '')
+        products = Product.objects.filter(name__icontains=query).prefetch_related('productimage_set')
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
