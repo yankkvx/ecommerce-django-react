@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from ..serializers import ProductSerializer
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from PIL import Image
 from django.db.models import Avg
 
@@ -14,9 +15,25 @@ from django.db.models import Avg
 def get_products(request):
     try:
         query = request.query_params.get('query', '')
-        products = Product.objects.filter(name__icontains=query).prefetch_related('productimage_set')
+        page = request.query_params.get('page', 1)
+        products = Product.objects.filter(
+            name__icontains=query).prefetch_related('productimage_set')
+
+        paginator = Paginator(products, 6)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+
+        if page == None:
+            page = 1
+
+        page = int(page)
+
         serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+        return Response({'products': serializer.data, 'page': page, 'pages': paginator.num_pages})
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
