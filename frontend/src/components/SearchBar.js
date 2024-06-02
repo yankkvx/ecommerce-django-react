@@ -9,7 +9,7 @@ function SearchBar() {
     const submitHandler = (e) => {
         e.preventDefault();
         if (query) {
-            navigate(`/?query=${query}`);
+            navigate(`/?query=${query}&page=1`);
         } else {
             navigate(window.location.pathname);
         }
