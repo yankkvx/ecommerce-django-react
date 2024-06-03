@@ -6,6 +6,7 @@ import Product from "../components/Product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginator from "../components/Paginator";
+import LatestCarousel from "../components/LatestCarousel";
 import { useNavigate } from "react-router-dom";
 
 function HomeScreen() {
@@ -20,6 +21,7 @@ function HomeScreen() {
 
     return (
         <div>
+            {!query && <LatestCarousel />}
             <h1 className="title-h1">Our Products</h1>
             {loading ? (
                 <Loader />
