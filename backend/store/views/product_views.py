@@ -39,6 +39,13 @@ def get_products(request):
 
 
 @api_view(['GET'])
+def get_latest_products(request):
+    products = Product.objects.order_by('-created_at')[:5]
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
 def products_by_category(request, category):
     try:
         products = Product.objects.filter(category__iexact=category)
