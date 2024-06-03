@@ -24,21 +24,47 @@ import {
     CREATE_REVIEW_REQUEST,
     CREATE_REVIEW_SUCCESS,
     CREATE_REVIEW_FAIL,
+    LATEST_PRODUCTS_REQUEST,
+    LATEST_PRODUCTS_SUCCESS,
+    LATEST_PRODUCTS_FAIL,
 } from "../constants/productConstants";
 
-export const listProducts = (query = '') => async (dispatch) => {
-    try {
-        dispatch({ type: PRODUCT_LIST_REQUEST });
+export const listProducts =
+    (query = "") =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: PRODUCT_LIST_REQUEST });
 
-        const { data } = await axios.get(`/api/products/${query}`);
+            const { data } = await axios.get(`/api/products/${query}`);
+
+            dispatch({
+                type: PRODUCT_LIST_SUCCESS,
+                payload: data,
+            });
+        } catch (error) {
+            dispatch({
+                type: PRODUCT_LIST_FAIL,
+                payload:
+                    error.response && error.response.data.detail
+                        ? error.response.data.detail
+                        : error.message,
+            });
+        }
+    };
+
+export const latestProducts = () => async (dispatch) => {
+    try {
+        dispatch({ type: LATEST_PRODUCTS_REQUEST });
+
+        const { data } = await axios.get("/api/products/latest/");
 
         dispatch({
-            type: PRODUCT_LIST_SUCCESS,
+            type: LATEST_PRODUCTS_SUCCESS,
             payload: data,
         });
     } catch (error) {
         dispatch({
-            type: PRODUCT_LIST_FAIL,
+            type: LATEST_PRODUCTS_FAIL,
             payload:
                 error.response && error.response.data.detail
                     ? error.response.data.detail
@@ -59,7 +85,7 @@ export const listCategory = () => async (dispatch) => {
         });
     } catch (error) {
         dispatch({
-            type: PRODUCT_LIST_BY_CATEGORY_FAIL,
+            type: CATEGORY_LIST_FAIL,
             payload:
                 error.response && error.response.data.detail
                     ? error.response.data.detail
