@@ -12,7 +12,11 @@ import {
     Form,
     ListGroupItem,
 } from "react-bootstrap";
-import { listSingleProduct, createReview } from "../actions/productActions";
+import {
+    listSingleProduct,
+    createReview,
+    deleteReview,
+} from "../actions/productActions";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -41,6 +45,9 @@ function ProductScreen() {
         success: successReview,
     } = reviewCreate;
 
+    const reviewDelete = useSelector((state) => state.reviewDelete);
+    const { success: successDelete } = reviewDelete;
+
     useEffect(() => {
         if (successReview) {
             setRating(0);
@@ -48,7 +55,7 @@ function ProductScreen() {
             dispatch({ type: CREATE_REVIEW_RESET });
         }
         dispatch(listSingleProduct(id));
-    }, [dispatch, successReview]);
+    }, [dispatch, successReview, successDelete]);
 
     const addToCartHandler = () => {
         navigate(`/cart/${id}?quantity=${quantity}`); // Use 'id' from useParams
@@ -62,6 +69,13 @@ function ProductScreen() {
                 comment,
             })
         );
+    };
+
+    const deleteReviewHandler = (id) => {
+        if (
+            window.confirm("Are you sure, that you want to delete this review?")
+        )
+            dispatch(deleteReview(id));
     };
 
     return (
@@ -190,16 +204,38 @@ function ProductScreen() {
                             )}
                             <ListGroup variant="flush">
                                 {product.reviews.map((review) => (
-                                    <ListGroup.Item key={review.id}>
-                                        {review.name}  
-                                        <Rating
-                                            value={review.rating}
-                                            color={"#000000"}
-                                        />
-                                        <p>
-                                            {review.created_at.substring(0, 10)}
-                                        </p>
-                                        <p className="review-comment">{review.comment}</p>
+                                    <ListGroup.Item
+                                        key={review.id}
+                                        className="review-container"
+                                    >
+                                        {userInfo && userInfo.is_staff && (
+                                            <Button
+                                                className="btn-sm delete-icon"
+                                                onClick={() =>
+                                                    deleteReviewHandler(
+                                                        review.id
+                                                    )
+                                                }
+                                            >
+                                                <i className="fas fa-trash" />
+                                            </Button>
+                                        )}
+                                        <div>
+                                            {review.name}
+                                            <Rating
+                                                value={review.rating}
+                                                color={"#000000"}
+                                            />
+                                            <p>
+                                                {review.created_at.substring(
+                                                    0,
+                                                    10
+                                                )}
+                                            </p>
+                                            <p className="review-comment">
+                                                {review.comment}
+                                            </p>
+                                        </div>
                                     </ListGroup.Item>
                                 ))}
                                 <ListGroup.Item>

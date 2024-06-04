@@ -87,3 +87,15 @@ tr td {
         font-size: 0.8rem;
     }
 }
+
+.review-container {
+    position: relative;
+    padding-top: 1.5rem; /* Чтобы иконка не перекрывала контент */
+}
+
+.delete-icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    cursor: pointer;
+}
