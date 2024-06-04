@@ -8,6 +8,7 @@ urlpatterns = [
     path('create/', product_views.create_product, name='create-product'),
     path('upload/', product_views.upload_image, name='image-ipload'),
     path('<str:pk>/reviews/', product_views.post_review, name='post-review'),
+    path('delete/review/<str:pk>/', product_views.delete_review, name='delete-review'),
     path('<int:pk>/', product_views.get_product, name='product'),
     path('category/', product_views.get_categories, name='category'),
     path('category/<str:category>', product_views.products_by_category,

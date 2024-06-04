@@ -195,3 +195,18 @@ def post_review(request, pk):
         content = {
             'detail': 'Thank you for your review! Your feedback has been submitted successfully.'}
         return Response(content, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def delete_review(request, pk):
+    try:
+        review = Review.objects.get(id=pk)
+        review.delete()
+        content = {'detail': 'Review successfully deleted.'}
+        return Response(content, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+        content = {'detail': 'Review not found.'}
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
