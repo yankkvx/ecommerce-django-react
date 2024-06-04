@@ -26,6 +26,9 @@ import {
     CREATE_REVIEW_SUCCESS,
     CREATE_REVIEW_FAIL,
     CREATE_REVIEW_RESET,
+    DELETE_REVIEW_REQUEST,
+    DELETE_REVIEW_SUCCESS,
+    DELETE_REVIEW_FAIL,
     LATEST_PRODUCTS_REQUEST,
     LATEST_PRODUCTS_SUCCESS,
     LATEST_PRODUCTS_FAIL,
@@ -189,6 +192,22 @@ export const reviewCreateReducer = (state = {}, action) => {
 
         case CREATE_REVIEW_RESET:
             return {};
+
+        default:
+            return state;
+    }
+};
+
+export const reviewDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+        case DELETE_REVIEW_REQUEST:
+            return { loading: true };
+
+        case DELETE_REVIEW_SUCCESS:
+            return { loading: true, success: true };
+
+        case DELETE_REVIEW_FAIL:
+            return { loading: false, error: action.payload };
 
         default:
             return state;

@@ -24,6 +24,9 @@ import {
     CREATE_REVIEW_REQUEST,
     CREATE_REVIEW_SUCCESS,
     CREATE_REVIEW_FAIL,
+    DELETE_REVIEW_REQUEST,
+    DELETE_REVIEW_SUCCESS,
+    DELETE_REVIEW_FAIL,
     LATEST_PRODUCTS_REQUEST,
     LATEST_PRODUCTS_SUCCESS,
     LATEST_PRODUCTS_FAIL,
@@ -280,3 +283,38 @@ export const createReview =
             });
         }
     };
+
+export const deleteReview = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: DELETE_REVIEW_REQUEST });
+
+        const {
+            userLogin: { userInfo },
+        } = getState();
+
+        const config = {
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+
+        const { data } = await axios.delete(
+            `/api/products/delete/review/${id}`,
+            config
+        );
+
+        dispatch({
+            type: DELETE_REVIEW_SUCCESS,
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: DELETE_REVIEW_FAIL,
+            payload:
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        });
+    }
+};

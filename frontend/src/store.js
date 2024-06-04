@@ -12,6 +12,7 @@ import {
     productListByCategoryReducer,
     categoryListReducer,
     latestProductsReducer,
+    reviewDeleteReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -56,6 +57,7 @@ const reducer = combineReducers({
     orderPay: orderPayReducer,
     userOrders: userOrdersReducer,
     reviewCreate: reviewCreateReducer,
+    reviewDelete: reviewDeleteReducer,
 });
 
 // Load data into state
