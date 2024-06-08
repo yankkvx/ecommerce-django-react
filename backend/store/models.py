@@ -38,6 +38,18 @@ class ProductImage(models.Model):
         return f'{self.product.name}'
 
 
+class FavouriteProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Each user can add a product to their favourites only once to avoid duplicates.
+    class Meta:
+        unique_together = ('product', 'user')
+
+    def __str__(self):
+        return f'{self.user.username} added {self.product.name} to the favourites'
+
+
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
