@@ -11,8 +11,10 @@ urlpatterns = [
     path('delete/review/<str:pk>/', product_views.delete_review, name='delete-review'),
     path('<int:pk>/', product_views.get_product, name='product'),
     path('category/', product_views.get_categories, name='category'),
-    path('category/<str:category>', product_views.products_by_category,
+    path('category/<str:category>/', product_views.products_by_category,
          name='product-by-category'),
+    path('favourites/', product_views.get_favourites, name='favourites'),
+    path('<str:pk>/add-to-favourites/',  product_views.add_to_favourites, name='add-to-favourites'),
     path('edit/<str:pk>/', product_views.edit_product, name='edit-product`'),
     path('delete/<str:pk>/', product_views.delete_product, name='delete-product'),
 ]

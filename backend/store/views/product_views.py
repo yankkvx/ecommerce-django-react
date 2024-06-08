@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from ..models import Product, ProductImage, Review
+from ..models import Product, ProductImage, Review, FavouriteProduct
 from django.contrib.auth.models import User
-from ..serializers import ProductSerializer
+from ..serializers import ProductSerializer, FavouriteProductSerializer
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -210,3 +210,36 @@ def delete_review(request, pk):
         return Response(content, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_favourites(request):
+    try:
+        user = request.user
+        favourites = FavouriteProduct.objects.filter(user=user)
+
+        if not favourites:
+            content = {'detail': "You don't have favourites products yet."}
+            return Response(content, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = FavouriteProductSerializer(favourites, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_to_favourites(request, pk):
+    product = Product.objects.get(id=pk)
+    user = request.user
+
+    # Check if product is already in favourites.
+    if FavouriteProduct.objects.filter(product=product, user=user).exists():
+        content = {'detail': 'Product is already in favourites.'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
+
+    FavouriteProduct.objects.create(product=product, user=user)
+    content = {'detail': 'Product added to favourites.'}
+    return Response(content, status=status.HTTP_200_OK)
