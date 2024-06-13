@@ -101,7 +101,7 @@ function Header() {
                                     <i className="fa-solid fa-bag-shopping header-icon" />
                                 </Nav.Link>
                             </LinkContainer>
-                            <LinkContainer to="/saved">
+                            <LinkContainer to="/favourites">
                                 <Nav.Link>
                                     <i className="fa-regular fa-heart header-icon" />
                                 </Nav.Link>
