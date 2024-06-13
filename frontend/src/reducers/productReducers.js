@@ -5,6 +5,9 @@ import {
     CATEGORY_LIST_REQUEST,
     CATEGORY_LIST_SUCCESS,
     CATEGORY_LIST_FAIL,
+    FAVOURITE_PRODUCT_LIST_REQUEST,
+    FAVOURITE_PRODUCT_LIST_SUCCESS,
+    FAVOURITE_PRODUCT_LIST_FAIL,
     PRODUCT_LIST_BY_CATEGORY_REQUEST,
     PRODUCT_LIST_BY_CATEGORY_SUCCESS,
     PRODUCT_LIST_BY_CATEGORY_FAIL,
@@ -204,7 +207,7 @@ export const reviewDeleteReducer = (state = {}, action) => {
             return { loading: true };
 
         case DELETE_REVIEW_SUCCESS:
-            return { loading: true, success: true };
+            return { loading: false, success: true };
 
         case DELETE_REVIEW_FAIL:
             return { loading: false, error: action.payload };
@@ -213,3 +216,20 @@ export const reviewDeleteReducer = (state = {}, action) => {
             return state;
     }
 };
+
+
+export const favouritesListReducer = (state ={products: []}, action) => {
+    switch(action.type) {
+        case FAVOURITE_PRODUCT_LIST_REQUEST:
+            return {loading: true}
+        
+        case FAVOURITE_PRODUCT_LIST_SUCCESS:
+            return {loading: false, products: action.payload}
+
+        case FAVOURITE_PRODUCT_LIST_FAIL:
+            return {loading: false, error: action.payload}
+
+        default:
+            return state;
+    }
+}

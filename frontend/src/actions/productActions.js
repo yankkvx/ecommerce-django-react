@@ -6,6 +6,9 @@ import {
     CATEGORY_LIST_REQUEST,
     CATEGORY_LIST_SUCCESS,
     CATEGORY_LIST_FAIL,
+    FAVOURITE_PRODUCT_LIST_REQUEST,
+    FAVOURITE_PRODUCT_LIST_SUCCESS,
+    FAVOURITE_PRODUCT_LIST_FAIL,
     PRODUCT_LIST_BY_CATEGORY_REQUEST,
     PRODUCT_LIST_BY_CATEGORY_SUCCESS,
     PRODUCT_LIST_BY_CATEGORY_FAIL,
@@ -318,3 +321,36 @@ export const deleteReview = (id) => async (dispatch, getState) => {
         });
     }
 };
+
+
+export const listFavourites = () => async (dispatch, getState) => {
+    try{
+        dispatch({type: FAVOURITE_PRODUCT_LIST_REQUEST});
+
+        const {
+            userLogin: { userInfo },
+        } = getState();
+
+        const config = {
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+
+        const {data} = await axios.get('/api/products/favourites/', config)
+
+        dispatch({
+            type: FAVOURITE_PRODUCT_LIST_SUCCESS,
+            payload: data,
+        });
+    } catch(error){
+        dispatch({
+            type: FAVOURITE_PRODUCT_LIST_FAIL,
+            payload:
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        });
+    }
+}
