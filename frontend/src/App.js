@@ -20,6 +20,7 @@ import ProductsScreen from "./screens/ProductsScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import OrdersScreen from "./screens/OrdersScreen";
 import ProductsByCategoryScreen from "./screens/ProductsByCategoryScreen.js";
+import FavouritesScreen from "./screens/FavouritesScreen.js";
 
 function App() {
     return (
@@ -87,6 +88,10 @@ function App() {
                             <Route
                                 path="/orders/:id?"
                                 element={<OrderScreen />}
+                            />
+                            <Route
+                                path="/favourites/"
+                                element={<FavouritesScreen />}
                             />
                         </Routes>
                     </Container>
