@@ -220,7 +220,7 @@ def get_favourites(request):
         favourites = FavouriteProduct.objects.filter(user=user)
 
         if not favourites:
-            content = {'detail': "You don't have favourites products yet."}
+            content = {'detail': "You don't have any favorite products yet."}
             return Response(content, status=status.HTTP_404_NOT_FOUND)
 
         serializer = FavouriteProductSerializer(favourites, many=True)
