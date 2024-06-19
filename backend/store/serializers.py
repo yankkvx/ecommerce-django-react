@@ -126,6 +126,8 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 
 class FavouriteProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model = FavouriteProduct
-        fields = '__all__'
+        fields = ['id', 'product', 'user']
