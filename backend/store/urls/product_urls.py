@@ -15,6 +15,7 @@ urlpatterns = [
          name='product-by-category'),
     path('favourites/', product_views.get_favourites, name='favourites'),
     path('<str:pk>/add-to-favourites/',  product_views.add_to_favourites, name='add-to-favourites'),
+    path('<str:pk>/remove-from-favourites/',  product_views.remove_from_favourites, name='remove-from-favourites'),
     path('edit/<str:pk>/', product_views.edit_product, name='edit-product`'),
     path('delete/<str:pk>/', product_views.delete_product, name='delete-product'),
 ]

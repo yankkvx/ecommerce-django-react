@@ -243,3 +243,16 @@ def add_to_favourites(request, pk):
     FavouriteProduct.objects.create(product=product, user=user)
     content = {'detail': 'Product added to favourites.'}
     return Response(content, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def remove_from_favourites(request, pk):
+    try:
+        user = request.user
+        favourite_product = FavouriteProduct.objects.get(product=pk, user=user)
+        favourite_product.delete()
+        content = {'detail': 'Product removed from favourites.'}
+        return Response('Product was deleted from favourites.')
+    except FavouriteProduct.DoesNotExist:
+        return Response({'detail': 'Product is not in favourites.'}, status=status.HTTP_404_NOT_FOUND)
