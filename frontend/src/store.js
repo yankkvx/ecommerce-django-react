@@ -15,6 +15,7 @@ import {
     reviewDeleteReducer,
     favouritesListReducer,
     addToFavouritesReducer,
+    favouriteProductRemoveReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -62,6 +63,7 @@ const reducer = combineReducers({
     reviewDelete: reviewDeleteReducer,
     favouritesList: favouritesListReducer,
     addToFavourites: addToFavouritesReducer,
+    removeFromFavourites: favouriteProductRemoveReducer,
 });
 
 // Load data into state

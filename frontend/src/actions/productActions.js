@@ -12,6 +12,9 @@ import {
     ADD_TO_FAVOURITES_REQUEST,
     ADD_TO_FAVOURITES_SUCCESS,
     ADD_TO_FAVOURITES_FAIL,
+    REMOVE_FROM_FAVOURITES_REQUEST,
+    REMOVE_FROM_FAVOURITES_SUCCESS,
+    REMOVE_FROM_FAVOURITES_FAIL,
     PRODUCT_LIST_BY_CATEGORY_REQUEST,
     PRODUCT_LIST_BY_CATEGORY_SUCCESS,
     PRODUCT_LIST_BY_CATEGORY_FAIL,
@@ -385,6 +388,42 @@ export const addToFavourites = (id) => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: ADD_TO_FAVOURITES_FAIL,
+            payload:
+                error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        });
+    }
+};
+
+export const removeFavouriteProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: REMOVE_FROM_FAVOURITES_REQUEST });
+
+        const {
+            userLogin: { userInfo },
+        } = getState();
+
+
+        const config = {
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+
+        const { data } = await axios.delete(
+            `/api/products/${id}/remove-from-favourites/`,
+            config
+        );
+
+        dispatch({
+            type: REMOVE_FROM_FAVOURITES_SUCCESS,
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: REMOVE_FROM_FAVOURITES_FAIL,
             payload:
                 error.response && error.response.data.detail
                     ? error.response.data.detail

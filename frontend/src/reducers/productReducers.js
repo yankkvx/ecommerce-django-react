@@ -11,6 +11,9 @@ import {
     ADD_TO_FAVOURITES_REQUEST,
     ADD_TO_FAVOURITES_SUCCESS,
     ADD_TO_FAVOURITES_FAIL,
+    REMOVE_FROM_FAVOURITES_REQUEST,
+    REMOVE_FROM_FAVOURITES_SUCCESS,
+    REMOVE_FROM_FAVOURITES_FAIL,
     PRODUCT_LIST_BY_CATEGORY_REQUEST,
     PRODUCT_LIST_BY_CATEGORY_SUCCESS,
     PRODUCT_LIST_BY_CATEGORY_FAIL,
@@ -245,6 +248,22 @@ export const addToFavouritesReducer = (state = {}, action) => {
             return { loading: false, success: true };
 
         case ADD_TO_FAVOURITES_FAIL:
+            return { loading: false, error: action.payload };
+
+        default:
+            return state;
+    }
+};
+
+export const favouriteProductRemoveReducer = (state = {}, action) => {
+    switch (action.type) {
+        case REMOVE_FROM_FAVOURITES_REQUEST:
+            return { loading: true };
+
+        case REMOVE_FROM_FAVOURITES_SUCCESS:
+            return { loading: false, success: true };
+
+        case REMOVE_FROM_FAVOURITES_FAIL:
             return { loading: false, error: action.payload };
 
         default:
