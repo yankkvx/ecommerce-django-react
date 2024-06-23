@@ -218,11 +218,6 @@ def get_favourites(request):
     try:
         user = request.user
         favourites = FavouriteProduct.objects.filter(user=user)
-
-        if not favourites:
-            content = {'detail': "You don't have any favorite products yet."}
-            return Response(content, status=status.HTTP_404_NOT_FOUND)
-
         serializer = FavouriteProductSerializer(favourites, many=True)
         return Response(serializer.data)
     except Exception as e:
