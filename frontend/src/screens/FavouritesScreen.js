@@ -32,6 +32,10 @@ function FavouritesScreen() {
                 <Loader />
             ) : error ? (
                 <Message variant="danger">{error}</Message>
+            ) : products.length === 0 ? (
+                <Message variant="info">
+                    You don't have any favorite products yet.
+                </Message>
             ) : (
                 <Row>
                     {products &&
