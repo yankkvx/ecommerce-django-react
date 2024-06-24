@@ -385,6 +385,8 @@ export const addToFavourites = (id) => async (dispatch, getState) => {
             type: ADD_TO_FAVOURITES_SUCCESS,
             payload: data,
         });
+
+        dispatch(listFavourites());
     } catch (error) {
         dispatch({
             type: ADD_TO_FAVOURITES_FAIL,
@@ -421,6 +423,7 @@ export const removeFavouriteProduct = (id) => async (dispatch, getState) => {
             type: REMOVE_FROM_FAVOURITES_SUCCESS,
             payload: data,
         });
+        dispatch(listFavourites());
     } catch (error) {
         dispatch({
             type: REMOVE_FROM_FAVOURITES_FAIL,

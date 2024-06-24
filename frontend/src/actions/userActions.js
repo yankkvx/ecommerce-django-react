@@ -27,6 +27,7 @@ import {
 } from "../constants/userConstants";
 
 import { USER_ORDERS_RESET } from "../constants/orderConstants";
+import { FAVOURITE_PRODUCT_LIST_RESET } from "../constants/productConstants";
 
 export const login = (email, password) => async (dispatch) => {
     try {
@@ -67,6 +68,7 @@ export const logout = () => (dispatch) => {
     dispatch({ type: USER_PROFILE_RESET });
     dispatch({ type: USER_ORDERS_RESET });
     dispatch({ type: USER_LIST_RESET });
+    dispatch({ type: FAVOURITE_PRODUCT_LIST_RESET });
 };
 
 export const register =

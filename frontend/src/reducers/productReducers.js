@@ -8,6 +8,7 @@ import {
     FAVOURITE_PRODUCT_LIST_REQUEST,
     FAVOURITE_PRODUCT_LIST_SUCCESS,
     FAVOURITE_PRODUCT_LIST_FAIL,
+    FAVOURITE_PRODUCT_LIST_RESET,
     ADD_TO_FAVOURITES_REQUEST,
     ADD_TO_FAVOURITES_SUCCESS,
     ADD_TO_FAVOURITES_FAIL,
@@ -233,6 +234,9 @@ export const favouritesListReducer = (state = { products: [] }, action) => {
 
         case FAVOURITE_PRODUCT_LIST_FAIL:
             return { loading: false, error: action.payload };
+
+        case FAVOURITE_PRODUCT_LIST_RESET:
+            return {products: []}
 
         default:
             return state;
