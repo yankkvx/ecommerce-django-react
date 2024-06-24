@@ -99,3 +99,7 @@ tr td {
     right: 0.5rem;
     cursor: pointer;
 }
+
+.fa-heart {
+    font-size: 20px;
+}
