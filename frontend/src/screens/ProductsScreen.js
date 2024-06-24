@@ -4,6 +4,7 @@ import { Row, Col, Image, Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Paginator from "../components/Paginator";
 import {
     listProducts,
     deleteProduct,
@@ -14,8 +15,9 @@ import { CREATE_PRODUCT_RESET } from "../constants/productConstants";
 function ProductsScreen() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const productList = useSelector((state) => state.productList);
-    const { products, loading, error } = productList;
+    const { products, loading, error, page, pages } = productList;
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -26,6 +28,8 @@ function ProductsScreen() {
         error: errorDelete,
         success: successDelete,
     } = productDelete;
+
+    const query = location.search
 
     const productCreate = useSelector((state) => state.productCreate);
     const {
@@ -43,9 +47,17 @@ function ProductsScreen() {
         if (successCreate) {
             navigate(`/admin/product/${createdProduct.id}/edit`);
         } else {
-            dispatch(listProducts());
+            dispatch(listProducts(query));
         }
-    }, [navigate, successDelete, dispatch, successCreate, createdProduct, userInfo]);
+    }, [
+        navigate,
+        successDelete,
+        dispatch,
+        successCreate,
+        createdProduct,
+        userInfo,
+        query
+    ]);
 
     const deleteProductHandler = (id) => {
         if (
@@ -57,7 +69,7 @@ function ProductsScreen() {
     };
 
     const addProductHandler = () => {
-        dispatch(createProduct())
+        dispatch(createProduct());
     };
 
     return (
@@ -81,58 +93,63 @@ function ProductsScreen() {
             ) : error ? (
                 <Message variant="danger">{error}</Message>
             ) : (
-                <Table striped bordered responsive className="table-sm">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Brand</th>
-                            <th>Price</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products &&
-                            products.map((product) => (
-                                <tr key={product.id}>
-                                    <td>{product.id}</td>
-                                    <td>
-                                        <Image
-                                            className="products-img"
-                                            src={product.images[0]}
-                                        />
-                                    </td>
-                                    <td>{product.name}</td>
-                                    <td>{product.category}</td>
-                                    <td>{product.brand}</td>
-                                    <td>${product.price}</td>
-                                    <td>
-                                        <Link
-                                            to={`/admin/product/${product.id}/edit`}
-                                        >
-                                            <Button
-                                                variant="info"
-                                                className="btn-sm"
+                <div>
+                    <Table striped bordered responsive className="table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products &&
+                                products.map((product) => (
+                                    <tr key={product.id}>
+                                        <td>{product.id}</td>
+                                        <td>
+                                            <Image
+                                                className="products-img"
+                                                src={product.images[0]}
+                                            />
+                                        </td>
+                                        <td>{product.name}</td>
+                                        <td>{product.category}</td>
+                                        <td>{product.brand}</td>
+                                        <td>${product.price}</td>
+                                        <td>
+                                            <Link
+                                                to={`/admin/product/${product.id}/edit`}
                                             >
-                                                <i className="fa-regular fa-pen-to-square" />
+                                                <Button
+                                                    variant="info"
+                                                    className="btn-sm"
+                                                >
+                                                    <i className="fa-regular fa-pen-to-square" />
+                                                </Button>
+                                            </Link>
+                                            <Button
+                                                variant="danger"
+                                                className="btn-sm"
+                                                onClick={() =>
+                                                    deleteProductHandler(
+                                                        product.id
+                                                    )
+                                                }
+                                            >
+                                                <i className="fa-regular fa-trash-can" />
                                             </Button>
-                                        </Link>
-                                        <Button
-                                            variant="danger"
-                                            className="btn-sm"
-                                            onClick={() =>
-                                                deleteProductHandler(product.id)
-                                            }
-                                        >
-                                            <i className="fa-regular fa-trash-can" />
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                    </tbody>
-                </Table>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </Table>
+                    <Paginator page={page} pages={pages} is_staff={true}/>
+                </div>
             )}
         </div>
     );

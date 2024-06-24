@@ -2,7 +2,7 @@ import React from "react";
 import { Pagination } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
-function Paginator({ pages, page, query = "" }) {
+function Paginator({ pages, page, query = "", is_staff = false }) {
     if (query) {
         const urlParams = new URLSearchParams(query);
         query = urlParams.get("query") || "";
@@ -18,7 +18,8 @@ function Paginator({ pages, page, query = "" }) {
                     <LinkContainer
                         key={i + 1}
                         to={{
-                            search: `?${searchQuery}page=${i + 1}`,
+                            pathname: is_staff ? "/admin/products" : "/",
+                            search: `?${searchQuery}page=${i + 1}`
                         }}
                     >
                         <Pagination.Item active={i + 1 === page}>
