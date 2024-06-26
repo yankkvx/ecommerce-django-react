@@ -164,7 +164,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.delete(
-            `/api/products/delete/${id}`,
+            `/api/products/${id}/action`,
             config
         );
 
@@ -231,7 +231,7 @@ export const editProduct = (product) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.put(
-            `/api/products/edit/${product.id}/`,
+            `/api/products/${product.id}/action/`,
             product,
             config
         );
@@ -273,7 +273,7 @@ export const createReview =
             };
 
             const { data } = await axios.post(
-                `/api/products/${productId}/reviews/`,
+                `/api/products/${productId}/review/`,
                 review,
                 config
             );
@@ -309,7 +309,7 @@ export const deleteReview = (id) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.delete(
-            `/api/products/delete/review/${id}`,
+            `/api/products/${id}/review/`,
             config
         );
 
@@ -376,7 +376,7 @@ export const addToFavourites = (id) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.post(
-            `/api/products/${id}/add-to-favourites/`,
+            `/api/products/${id}/favourites/`,
             {},
             config
         );
@@ -415,7 +415,7 @@ export const removeFavouriteProduct = (id) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.delete(
-            `/api/products/${id}/remove-from-favourites/`,
+            `/api/products/${id}/favourites/`,
             config
         );
 
