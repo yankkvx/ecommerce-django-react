@@ -1,20 +1,11 @@
 from django.urls import path
-from ..views import user_views
-
+from store.views.user_views import (
+    MyTokenObtainPairView, UserManagement, AdminUserManagement, RegisterUser)
 
 urlpatterns = [
-    path('login/', user_views.MyTokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
-
-    path('sign-up/', user_views.register_user, name='sign-up'),
-
-    path('profile/update/', user_views.update_user, name='update-user'),
-    path('profile/', user_views.get_user, name='user-profile'),
-
-    path('delete/<str:pk>/', user_views.delete_user, name='delete-user'),
-    path('update/<str:pk>/', user_views.update_user_by_admin,
-         name='update-user-by-admin'),
-    path('<str:pk>/', user_views.get_user_by_id, name='get-user-by-id'),
-
-    path('', user_views.get_users, name='users'),
+    path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('sign-up/', RegisterUser.as_view(), name='sign-up'),
+    path('profile/', UserManagement.as_view(), name='user-management'),
+    path('<str:pk>/', AdminUserManagement.as_view(), name='delete-user'),
+    path('', AdminUserManagement.as_view(), name='users'),
 ]
