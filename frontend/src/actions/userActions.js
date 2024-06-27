@@ -162,11 +162,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.put(
-            `/api/users/profile/update/`,
-            user,
-            config
-        );
+        const { data } = await axios.put(`/api/users/profile/`, user, config);
 
         dispatch({
             type: USER_UPDATE_SUCCESS,
@@ -237,7 +233,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.delete(`/api/users/delete/${id}`, config);
+        const { data } = await axios.delete(`/api/users/${id}`, config);
 
         dispatch({
             type: USER_DELETE_SUCCESS,
@@ -270,7 +266,7 @@ export const updateAdminUser = (user) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.put(
-            `/api/users/update/${user.id}/`,
+            `/api/users/${user.id}/`,
             user,
             config
         );
