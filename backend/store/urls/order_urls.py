@@ -8,5 +8,5 @@ urlpatterns = [
     path('my-orders/', OrderManagement.as_view(), name='user-orders'),
     path('<str:pk>/deliver/', AdminOrderManagement.as_view(), name='deliver'),
     path('<str:pk>/', OrderManagement.as_view(), name='get-order'),
-    path('<str:pk>/pay/', AdminOrderManagement.as_view(), name='pay'),
+    path('<str:pk>/pay/', OrderManagement.as_view(), name='pay'),
 ]
