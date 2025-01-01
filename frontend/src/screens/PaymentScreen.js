@@ -12,6 +12,9 @@ function PaymentScreen() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
     const [paymentMethod, setPaymentMethod] = useState("PayPal");
 
     if (!shippingAddress.address) {
@@ -19,9 +22,13 @@ function PaymentScreen() {
     }
 
     const submitHandler = (e) => {
-        e.preventDefault();
-        dispatch(savePaymentMethod(paymentMethod))
-        navigate("/place-order");
+        if (!userInfo) {
+            navigate("/login");
+        } else {
+            e.preventDefault();
+            dispatch(savePaymentMethod(paymentMethod));
+            navigate("/place-order");
+        }
     };
 
     return (
